@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const DialogContainer = styled.div`
-position: absolute;
+position: fixed;
 z-index: 1;
 background-color: rgb(0, 0, 0, 0.7);
 height: 100%;
@@ -40,9 +40,11 @@ export const CloseButton =  styled.span`
 export const GifImage =  styled.img`
 `;
 
-export const PausePlayButton = styled.div`
+export const PausePlayButton = styled.img`
 position: fixed;
 top: 50%;
 left: 50%;
 transform: translate(-50%, -50%);
+height: 2rem;
+width: 2rem;
 `;

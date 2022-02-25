@@ -7,25 +7,23 @@ const DELAY = 1000;
 let counter = 0;
 
 const Search = (props) => {
-    const { searchQuery, setSearchQuery, setBottomOffset, setTopOffset ,setGifs } = props;
+    const { isFirst, searchQuery, setSearchQuery, setBottomOffset, setTopOffset ,setGifs } = props;
     const ThemeContextVal = useContext(ThemeContext);
 
     const updateState = (query) => {
         query = query.toLowerCase();
-        console.log("query " , query, counter++);
+        console.log("query ", query, counter++);
+        isFirst.current = true;
         // TODO:: setTopOffset get offset based on gifs number logic here aswell
-        if (searchQuery === query) {
-            setBottomOffset((offset) => offset + 1);
-        } else {
-            setSearchQuery(query);
-            setBottomOffset(0);
-            setTopOffset(0);
-            setGifs([]);
-        }
+        setSearchQuery(()=>query);
+        // setBottomOffset(()=> 0);
+        // setTopOffset(0);
+        setGifs(() => []);
     }
     
+    const myDebouncedFunction = debounce(updateState, DELAY);
+
     const onChangeSearch = (e) => {
-        const myDebouncedFunction = debounce(updateState, DELAY);
         myDebouncedFunction(e.target.value);
     };
 

@@ -9,63 +9,74 @@ import GifDialog from '../GifDialog/GifDialog';
 // TODO:: Remove element on below 
 
 const GridWrapper = (props) => {
-    const { bottomOffset ,setBottomOffset, topOffset, setTopOffset ,gifs ,setGifs, searchQuery} = props;
+    const { isFirst, bottomOffset ,setBottomOffset, topOffset, setTopOffset ,gifs ,setGifs, searchQuery} = props;
     const loaderRef = useRef(null);
-    const loaderRefTop = useRef(null);
+    // const loaderRefTop = useRef(null);
     const [isDialog, setIsDialog] = useState(false);
     const [currentGif, setCurrentGif] = useState(null);
+    const [triggerIntersection, setTriggerIntersection] = useState(false);
+    const firstTime = useRef(true);
 
     const callbackFunctionBottom =
         (entries, observer) => {
             const [entry] = entries;
-            if (entry.isIntersecting) {
+            if(isFirst.current) {
+                isFirst.current = false;
+                return;
+            }
+            if (entry.isIntersecting && entry.intersectionRatio > 0) {
+                console.log("i am in offset")
                 setBottomOffset((old) => (old + 25));
+                setTriggerIntersection(old => !old);
             }
         };
 
-    const callbackFunctionTop =
-        (entries, observer) => {
-            const [entry] = entries;
-            if (entry.isIntersecting) {
-                setTopOffset((old) => {
-                    if (old > 25) {
-                        return old - 25;
-                    } else {
-                        return 0;
-                    }
-                });
-            }
-        };
+    // const callbackFunctionTop =
+    //     (entries, observer) => {
+    //         const [entry] = entries;
+    //         if (entry.isIntersecting) {
+    //             setTopOffset((old) => {
+    //                 if (old > 25) {
+    //                     return old - 25;
+    //                 } else {
+    //                     return 0;
+    //                 }
+    //             });
+    //         }
+    //     };
 
     useEffect(async() => {
         // if (bottomOffset == 0) {
         //     return;
         // }
-        if (bottomOffset >= 125) {
-            setTopOffset(bottomOffset-125);
-        }
+        // if (bottomOffset >= 125) {
+        //     setTopOffset(bottomOffset-125);
+        // }
         // console.log("searchQuery " ,searchQuery);
         // if (gifs.length > 125) {
         //     //remove from start of the array
         //     gifs.splice(0,25);
         //     setGifs(gifs);
         // }
-
+        if (firstTime.current) {
+            firstTime.current = false;
+            return;
+        }
+console.log(" i am insearch query", searchQuery, bottomOffset)
         if (searchQuery !== "") {
             try {
                 let gifsData = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=44A7F4nvMFHKr7lYMQIp4KJv0XR5bvm4&q=${searchQuery}&limit=25&offset=${bottomOffset}&rating=g&lang=en`);
                 gifsData = await gifsData.json();
-                console.log("i am in search query results ")
-                // setGifs((oldGifs) => [...oldGifs, ...gifsData.data]);
+                setGifs((oldGifs) => [...oldGifs, ...gifsData.data]);
 
-                setGifs((oldGifs) => {
-                    let gifs = [...oldGifs, ...gifsData.data];
-                    if (gifs.length > 125) {
-                        gifs.splice(0,25);
-                        return gifs;
-                    } 
-                    return gifs;
-                }); 
+                // setGifs((oldGifs) => {
+                //     let gifs = [...oldGifs, ...gifsData.data];
+                //     if (gifs.length > 125) {
+                //         gifs.splice(0,25);
+                //         return gifs;
+                //     } 
+                //     return gifs;
+                // }); 
             } catch (error) {
                 console.log(`Error Fetching search result for ${searchQuery}` , JSON.stringify(error));
             }
@@ -73,62 +84,114 @@ const GridWrapper = (props) => {
             try {
                 let gifsData = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=44A7F4nvMFHKr7lYMQIp4KJv0XR5bvm4&limit=25&rating=g&offset=${bottomOffset}`);
                 gifsData = await gifsData.json();
-                // setGifs((oldGifs) => [...oldGifs, ...gifsData.data]);
+                setGifs((oldGifs) => [...oldGifs, ...gifsData.data]);
 
-                setGifs((oldGifs) => {
-                    let gifs = [...oldGifs, ...gifsData.data];
-                    if (gifs.length > 125) {
-                        gifs.splice(0,25);
-                        // return gifs;
-                    } 
-                    return gifs;
-                }); 
+                // setGifs((oldGifs) => {
+                //     let gifs = [...oldGifs, ...gifsData.data];
+                //     if (gifs.length > 125) {
+                //         gifs.splice(0,25);
+                //         // return gifs;
+                //     } 
+                //     return gifs;
+                // }); 
             } catch (err) {
                 console.log(JSON.stringify(err));
             }
         }
-    }, [bottomOffset, searchQuery]);
+    }, [triggerIntersection]);
 
     useEffect(async() => {
-        if (topOffset === -1) {
-            return;
-        }
+        // if (bottomOffset == 0) {
+        //     return;
+        // }
+        // if (bottomOffset >= 125) {
+        //     setTopOffset(bottomOffset-125);
+        // }
         // console.log("searchQuery " ,searchQuery);
         // if (gifs.length > 125) {
-        //     //remove from end of the array
-        //     gifs.splice(-25);
+        //     //remove from start of the array
+        //     gifs.splice(0,25);
         //     setGifs(gifs);
         // }
-
+console.log(" i am insearch query pranay", searchQuery, bottomOffset)
         if (searchQuery !== "") {
             try {
-                let gifsData = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=44A7F4nvMFHKr7lYMQIp4KJv0XR5bvm4&q=${searchQuery}&limit=25&offset=${topOffset}&rating=g&lang=en`);
+                let gifsData = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=44A7F4nvMFHKr7lYMQIp4KJv0XR5bvm4&q=${searchQuery}&limit=25&offset=0&rating=g&lang=en`);
                 gifsData = await gifsData.json();
-                console.log("i am in search query results 2")
-                // setGifs((oldGifs) => [...gifsData.data, ...oldGifs]);
+                setGifs((oldGifs) => [...oldGifs, ...gifsData.data]);
 
-                setGifs((oldGifs) => {
-                    let gifs = [...gifsData.data, ...oldGifs];
-                    if (gifs.length > 175) {
-                        gifs.splice(-25);
-                        // return gifs
-                    }
-                    return gifs;
-
-                });
+                // setGifs((oldGifs) => {
+                //     let gifs = [...oldGifs, ...gifsData.data];
+                //     if (gifs.length > 125) {
+                //         gifs.splice(0,25);
+                //         return gifs;
+                //     } 
+                //     return gifs;
+                // }); 
             } catch (error) {
                 console.log(`Error Fetching search result for ${searchQuery}` , JSON.stringify(error));
             }
         } else {
             try {
-                let gifsData = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=44A7F4nvMFHKr7lYMQIp4KJv0XR5bvm4&limit=25&rating=g&offset=${topOffset}`);
+                let gifsData = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=44A7F4nvMFHKr7lYMQIp4KJv0XR5bvm4&limit=25&rating=g&offset=0`);
                 gifsData = await gifsData.json();
-                setGifs((oldGifs) => [...gifsData.data, ...oldGifs]);
+                setGifs((oldGifs) => [...oldGifs, ...gifsData.data]);
+
+                // setGifs((oldGifs) => {
+                //     let gifs = [...oldGifs, ...gifsData.data];
+                //     if (gifs.length > 125) {
+                //         gifs.splice(0,25);
+                //         // return gifs;
+                //     } 
+                //     return gifs;
+                // }); 
             } catch (err) {
                 console.log(JSON.stringify(err));
             }
         }
-    }, [topOffset, searchQuery]);
+        setBottomOffset(0);
+    }, [ searchQuery ]);
+
+    // useEffect(async() => {
+    //     if (topOffset === -1) {
+    //         return;
+    //     }
+    //     // console.log("searchQuery " ,searchQuery);
+    //     // if (gifs.length > 125) {
+    //     //     //remove from end of the array
+    //     //     gifs.splice(-25);
+    //     //     setGifs(gifs);
+    //     // }
+
+    //     if (searchQuery !== "") {
+    //         try {
+    //             let gifsData = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=44A7F4nvMFHKr7lYMQIp4KJv0XR5bvm4&q=${searchQuery}&limit=25&offset=${topOffset}&rating=g&lang=en`);
+    //             gifsData = await gifsData.json();
+    //             console.log("i am in search query results 2")
+    //             // setGifs((oldGifs) => [...gifsData.data, ...oldGifs]);
+
+    //             setGifs((oldGifs) => {
+    //                 let gifs = [...gifsData.data, ...oldGifs];
+    //                 if (gifs.length > 175) {
+    //                     gifs.splice(-25);
+    //                     // return gifs
+    //                 }
+    //                 return gifs;
+
+    //             });
+    //         } catch (error) {
+    //             console.log(`Error Fetching search result for ${searchQuery}` , JSON.stringify(error));
+    //         }
+    //     } else {
+    //         try {
+    //             let gifsData = await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=44A7F4nvMFHKr7lYMQIp4KJv0XR5bvm4&limit=25&rating=g&offset=${topOffset}`);
+    //             gifsData = await gifsData.json();
+    //             setGifs((oldGifs) => [...gifsData.data, ...oldGifs]);
+    //         } catch (err) {
+    //             console.log(JSON.stringify(err));
+    //         }
+    //     }
+    // }, [topOffset, searchQuery]);
 
     useEffect(() => {
         const options = {
@@ -142,33 +205,34 @@ const GridWrapper = (props) => {
             threshold: 0
         }
         const observer = new IntersectionObserver(callbackFunctionBottom, options);
-        const observerTop = new IntersectionObserver(callbackFunctionTop, options);
+        // const observerTop = new IntersectionObserver(callbackFunctionTop, options);
         if (loaderRef.current) {
             observer.observe(loaderRef.current);
         }
 
-        if (loaderRefTop.current) {
-            observerTop.observe(loaderRefTop.current);
-        }
+        // if (loaderRefTop.current) {
+        //     observerTop.observe(loaderRefTop.current);
+        // }
 
         return () => {
             if (loaderRef.current) {
                 observer.unobserve(loaderRef.current);
             }
-            if (loaderRefTop.current) {
-                observerTop.unobserve(loaderRefTop.current);
-            }
+            // if (loaderRefTop.current) {
+            //     observerTop.unobserve(loaderRefTop.current);
+            // }
         }
     }, []);
 
     const openDialog = (gifObj) => {
-        console.log("click event fired");
         setIsDialog(true);
         setCurrentGif(gifObj);
+        document.body.style.overflow = "hidden";
     }
 
     const onCloseClick = () => {
         setIsDialog(false);
+        document.body.style.overflow = "unset";
     }
 
 
