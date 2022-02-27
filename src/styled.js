@@ -5,17 +5,7 @@ display: flex;
 `;
 
 export const AppContainer = styled.div`
-// &.dark {
-//     background-color: black;
-// }
-// &.light {
-//     background-color: lightyellow;
-// }
 max-width: 1200px;
 margin: auto;
+padding: 20px;
 `;
-
-// export const AppBody = styled.div`
-// max-width: 1200px;
-// margin: auto;
-// `;

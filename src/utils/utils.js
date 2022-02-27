@@ -4,10 +4,10 @@ export const getTheme = (theme) => {
 
 export const debounce = (cb, delay) => {
     let timer;
-    return (e) => {
+    return (query) => {
         clearTimeout(timer);
         timer = setTimeout(() => {
-            cb(e.target.value);
+            cb(query);
         }, delay);
     }
 }

@@ -1,7 +1,7 @@
 import { memo, useContext } from "react";
 import { ThemeSelectorWrapper } from './styled';
 import { ThemeContext } from '../../App';
-import { getTheme } from "../../utils";
+import { getTheme } from "../../utils/utils";
 
 const ThemeSelector = () => {
     const ThemeContextVal = useContext(ThemeContext);

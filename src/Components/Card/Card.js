@@ -2,8 +2,7 @@ import { memo } from "react";
 import { CardContainer, CardImage } from './styled';
 
 const Card = ({gif, index, onClickHandler}) => {
-    const { images, title, id } = gif;
-    // console.log(index);
+    const { images, title } = gif;
 
     return (
         <CardContainer data-test={`card-number-${index}`}>
