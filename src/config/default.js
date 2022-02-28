@@ -6,7 +6,7 @@ export const config = {
         timeout: {
             giphy: {
                 search: 5000,
-                trending: 300
+                trending: 5000
             }
         },
     }, 
@@ -16,7 +16,7 @@ export const config = {
         },
         timeout: {
             giphy: {
-                search: 3000,
+                search: 5000,
                 trending: 3000
             }
         },
