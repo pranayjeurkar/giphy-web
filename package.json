@@ -27,7 +27,6 @@
     "workbox-strategies": "^5.1.4",
     "workbox-streams": "^5.1.4"
   },
-  "homepage": "https://pranayjeurkar.github.io/giphy-web",
   "scripts": {
     "predeploy": "yarn build",
     "deploy": "gh-pages -d build",
