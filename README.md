@@ -17,7 +17,6 @@
 
 - Run `yarn dev` to run local server
 - Run `yarn start` to start production server
-- Run `yarn deploy` to deploy the application
 
 ### Host 
-Production application host - https://pranayjeurkar.github.io/giphy-web/ 
+Application host - https://giphy-web.vercel.app/
