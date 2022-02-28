@@ -6,8 +6,6 @@ import GifDialog from '../GifDialog/GifDialog';
 import { getSearchedGifs, getTrendingGifs } from '../../api/GiphyApi/giphyApi';
 import ErrorWrapper from '../ErrorWrapper/ErrorWrapper';
 
-// TODO:: Remove element on below 
-
 const GridWrapper = (props) => {
     const { isFirst, bottomOffset, setBottomOffset, gifs, setGifs, searchQuery } = props;
     const loaderRef = useRef(null);
@@ -20,9 +18,21 @@ const GridWrapper = (props) => {
     const setGifsData = async (offset) => {
         try {
             const gifsData = searchQuery !== "" ? await getSearchedGifs(searchQuery, offset) : await getTrendingGifs(offset);
+            setApiError(false);
             setGifs((oldGifs) => [...oldGifs, ...gifsData.data.data]);
         } catch (error) {
-            setApiError(true);
+            if (offset === 0) {
+                setApiError(true);
+            } else {
+                setBottomOffset((old) => 
+                    {
+                        if (old > 25) {
+                            return old - 25;
+                        } 
+                        return old;
+                    }
+                );
+            }
             console.log(`Error fetching result for ${searchQuery !== "" ? `search api with query ${searchQuery}` : "trending api"} `, JSON.stringify(error));
         }
     }
@@ -60,11 +70,6 @@ const GridWrapper = (props) => {
             margin: "0px",
             threshold: 0.5
         }
-        const optionsTop = {
-            root: null,
-            margin: "0px",
-            threshold: 0
-        }
         const observer = new IntersectionObserver(callbackFunctionBottom, options);
         if (loaderRef.current) {
             observer.observe(loaderRef.current);
@@ -88,16 +93,20 @@ const GridWrapper = (props) => {
         document.body.style.overflow = "unset";
     }
 
+    if (apiError) {
+        return <ErrorWrapper />;
+    }
+
     return (
         <div>
             <GifsContainer className='gifsContainer'>
                 {
                     gifs.map((gif, index) => (
-                        <Card gif={gif} index={index} key={`${gif.id}`} onClickHandler={openDialog} />
+                        <Card gif={gif} index={index} key={`${gif.id}-${index}`} onClickHandler={openDialog} />
                     ))
                 }
             </GifsContainer>
-            {apiError ? <ErrorWrapper /> : <Loader loaderRef={loaderRef} />}
+            <Loader loaderRef={loaderRef} />
             {isDialog && <GifDialog gif={currentGif} onCloseClick={onCloseClick} />}
         </div>
     )
