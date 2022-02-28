@@ -30,7 +30,7 @@
   "scripts": {
     "predeploy": "yarn build",
     "deploy": "gh-pages -d build",
-    "dev": "PORT=3002 react-scripts start",
+    "dev": "PORT=3002 REACT_APP_GIPHY_API_KEY=44A7F4nvMFHKr7lYMQIp4KJv0XR5bvm4 react-scripts start",
     "start": "NODE_ENV=production react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

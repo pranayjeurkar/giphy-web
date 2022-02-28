@@ -4,7 +4,7 @@ const LIMIT = 25;
 const HOST_NAME = "giphy";
 const SEARCH_API = "search";
 const TREANDING_API = "trending";
-const API_KEY = "44A7F4nvMFHKr7lYMQIp4KJv0XR5bvm4";
+const API_KEY = process.env.REACT_APP_GIPHY_API_KEY;
 const URL = getUrl(HOST_NAME);
 
 export const getSearchedGifs = (query, offset) => {
